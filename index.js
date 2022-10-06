@@ -1,5 +1,15 @@
 require("dotenv").config();
 
+("use strict");
+
+const express = require("express");
+const path = require("path");
+const { createServer } = require("http");
+
+const app = express();
+
+const server = createServer(app);
+
 const { Client, GatewayIntentBits } = require("discord.js");
 const token = process.env.TOKEN;
 
@@ -22,3 +32,7 @@ client.on("messageCreate", (message) => {
 });
 
 client.login(token);
+
+server.listen(8080, function () {
+  console.log("Listening on http://0.0.0.0:8080");
+});
