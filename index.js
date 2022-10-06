@@ -5,6 +5,8 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const { createServer } = require("http");
+const CoinGecko = require("coingecko-api");
+const CoinGeckoClient = new CoinGecko();
 
 const app = express();
 
@@ -61,8 +63,22 @@ client.on("guildMemberAdd", async (member) => {
 
 demoContract.on("NewMsg", async (event) => {
   const discordChannel = client.channels.cache.get(welcomeChannelId);
-  discordChannel.send({ content: `new NewMsg event $${event}` });
+  discordChannel.send({ content: `new event with params ${event}` });
 });
+
+client.on("messageCreate", async (message) => {
+  if (message.content == "price") {
+    message.reply(`Ethereum current price is $${await pricing()}`);
+  }
+});
+
+async function pricing() {
+  let data = await CoinGeckoClient.simple.price({
+    ids: ["ethereum"],
+    vs_currencies: ["eur", "usd"],
+  });
+  return data.data.ethereum.usd;
+}
 
 client.login(token);
 
