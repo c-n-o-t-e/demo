@@ -18,6 +18,7 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
   ],
 });
 
@@ -29,6 +30,14 @@ client.on("messageCreate", (message) => {
   if (message.content == "hi") {
     message.reply("Hello!!!");
   }
+});
+
+const welcomeChannelId = "1027509178455031809";
+
+client.on("guildMemberAdd", async (member) => {
+  member.guild.channels.cache.get(welcomeChannelId).send({
+    content: `<@${member.id}> Welcome to the server!`,
+  });
 });
 
 client.login(token);
