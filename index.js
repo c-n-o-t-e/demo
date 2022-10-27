@@ -17,7 +17,7 @@ const { MultiCall } = require("@indexed-finance/multicall");
 const abi = require("./Abi/abi1.json");
 const abi2 = require("./Abi/abi2.json");
 const abi3 = require("./Abi/abi3.json");
-const welcomeChannelId = `${process.env.CHANNEL_ID}`;
+const channelId = `${process.env.CHANNEL_ID}`;
 const mongoDBUrl = `${process.env.MONGO_DB_URL}`;
 
 const client = new Client({
@@ -74,7 +74,7 @@ marketContract.on("Build", async (sender, positionId, userOI) => {
   const percentage = userOI * 100;
   const percentageOfCapOiBought = percentage / capOI;
 
-  const discordChannel = client.channels.cache.get(welcomeChannelId);
+  const discordChannel = client.channels.cache.get(channelId);
   discordChannel.send({
     content: `New position built, cap oi: ${capOI}, user oi: ${userOI}, percentage of cap oi bought: ${percentageOfCapOiBought}% `,
   });
@@ -92,10 +92,7 @@ marketContract.on("Build", async (sender, positionId, userOI) => {
 client.on("messageCreate", async (message) => {
   let messageArray = message.content.split(" ");
 
-  if (
-    messageArray[0] == "/positions" &&
-    message.channel.id == welcomeChannelId
-  ) {
+  if (messageArray[0] == "/positions" && message.channel.id == channelId) {
     if (
       messageArray[1] == undefined ||
       config.MARKETS[`${messageArray[1]}`] == undefined
@@ -164,7 +161,7 @@ client.on("messageCreate", async (message) => {
 client.on("messageCreate", async (message) => {
   let messageArray = message.content.split(" ");
 
-  if (messageArray[0] == "/uPnL" && message.channel.id == welcomeChannelId) {
+  if (messageArray[0] == "/uPnL" && message.channel.id == channelId) {
     if (
       messageArray[1] == undefined ||
       config.MARKETS[`${messageArray[1]}`] == undefined
@@ -243,10 +240,7 @@ client.on("messageCreate", async (message) => {
 client.on("messageCreate", async (message) => {
   let messageArray = message.content.split(" ");
 
-  if (
-    messageArray[0] == "/transfers" &&
-    message.channel.id == welcomeChannelId
-  ) {
+  if (messageArray[0] == "/transfers" && message.channel.id == channelId) {
     if (
       messageArray[1] == undefined ||
       config.MARKETS[`${messageArray[1]}`] == undefined
@@ -300,7 +294,7 @@ client.on("messageCreate", (message) => {
 });
 
 client.on("guildMemberAdd", async (member) => {
-  member.guild.channels.cache.get(welcomeChannelId).send({
+  member.guild.channels.cache.get(channelId).send({
     content: `<@${member.id}> Welcome to the server!`,
   });
 });
